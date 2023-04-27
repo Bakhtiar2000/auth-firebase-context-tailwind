@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Providers/authProviders';
 
 const Login = () => {
 
     const { signIn }= useContext(AuthContext)
+    const [success, setSuccess] =useState('')
+    const [error, setError] =useState('')
 
     const handleLogin= event=>{
         event.preventDefault()
@@ -12,13 +14,17 @@ const Login = () => {
         const email= form.email.value;
         const password= form.password.value;
         console.log(email, password)
+        setSuccess('')
+        setError('')
 
         signIn(email, password)
         .then(result=>{
             const loggedUser= result.user
-            console.log(loggedUser)
+            setSuccess('Login Successful')
+            form.reset()
         })
-        .catch(err=> console.log(err))
+        .catch(err=> setError(err.message))
+
     }
     return (
         <div className="hero min-h-screen bg-base-200">
@@ -46,6 +52,8 @@ const Login = () => {
                                 <button className="btn btn-primary">Login</button>
                             </div>
                         </form>
+                        <p className='text-green-600 font-semibold'>{success}</p>
+                        <p className='text-red-600 font-semibold'>{error}</p>
                         <p className='mb-4 ml-8'>
                         <Link className="label-text-alt link link-hover" to="/register">New to auth master? Please register</Link>
                         </p>
